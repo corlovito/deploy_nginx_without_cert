@@ -1,5 +1,4 @@
 ###############################################################################################
-# Stack is optimized/tuned for a 256MB server                                                 #
 ###############################################################################################
 
 source ./options.conf
@@ -18,13 +17,18 @@ fi
 
 function basic_server_setup {
 
-   # apt-get update && apt-get -y safe-upgrade
+    apt-get update && apt-get -y safe-upgrade
 
     # Reconfigure sshd - change port and disable root login
+    #sed -i 's/^Port [0-9]*/Port '${SSHD_PORT}'/' /etc/ssh/sshd_config
+    #if  [ $ROOT_LOGIN = "no" ]; then
+     #   sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+   # fi;
+   # service ssh reload
 
     # Set hostname and FQDN
-  #  sed -i 's/'${SERVER_IP}'.*/'${SERVER_IP}' '${HOSTNAME_FQDN}' '${HOSTNAME}'/' /etc/hosts
-   # echo "$HOSTNAME" > /etc/hostname
+    #sed -i 's/'${SERVER_IP}'.*/'${SERVER_IP}' '${HOSTNAME_FQDN}' '${HOSTNAME}'/' /etc/hosts
+    #echo "$HOSTNAME" > /etc/hostname
 
     if [ $DISTRO = "Debian" ]; then
         # Debian system, use hostname.sh
@@ -39,14 +43,14 @@ function basic_server_setup {
     sed -i 's/^net.ipv4.conf.all.accept_source_route = 1/net.ipv4.conf.all.accept_source_route = 0/' /etc/sysctl.conf
     sed -i 's/^#net.ipv6.conf.all.accept_source_route = 0/net.ipv6.conf.all.accept_source_route = 0/' /etc/sysctl.conf
     sed -i 's/^net.ipv6.conf.all.accept_source_route = 1/net.ipv6.conf.all.accept_source_route = 0/' /etc/sysctl.conf
-   # if  [ $ROOT_LOGIN = "no" ]; then
-    #    echo -e "\033[35;1m Root login disabled, SSH port set to $SSHD_PORT. Hostname set to $HOSTNAME and FQDN to $HOSTNAME_FQDN. \033[0m"
-     #   echo -e "\033[35;1m Remember to create a normal user account for login or you will be locked out from your box! \033[0m"
-   # else
-    #    echo -e "\033[35;1m Root login active, SSH port set to $SSHD_PORT. Hostname set to $HOSTNAME and FQDN to $HOSTNAME_FQDN. \033[0m"
-   # fi
+    if  [ $ROOT_LOGIN = "no" ]; then
+        echo -e "\033[35;1m Root login disabled, SSH port set to $SSHD_PORT. Hostname set to $HOSTNAME and FQDN to $HOSTNAME_FQDN. \033[0m"
+        echo -e "\033[35;1m Remember to create a normal user account for login or you will be locked out from your box! \033[0m"
+    else
+        echo -e "\033[35;1m Root login active, SSH port set to $SSHD_PORT. Hostname set to $HOSTNAME and FQDN to $HOSTNAME_FQDN. \033[0m"
+    fi
 
-#} # End function basic_server_setup
+} # End function basic_server_setup
 
 
 function setup_apt {
@@ -253,7 +257,8 @@ EOF
 function install_php {
 
     # Install PHP packages and extensions specified in options.conf
-    apt-get -y install php-fpm
+    apt-get -y install $PHP_BASE
+    apt-get -y install $PHP_EXTRAS
 
 } # End function install_php
 
@@ -349,41 +354,41 @@ function optimize_stack {
         cat ./config/apache2_ports.conf > /etc/apache2/ports.conf
     fi
 
-    if [ $AWSTATS_ENABLE = 'yes' ]; then
+    #if [ $AWSTATS_ENABLE = 'yes' ]; then
         # Configure AWStats
-        temp=`grep -i sitedomain /etc/awstats/awstats.conf.local | wc -l`
-        if [ $temp -lt 1 ]; then
-            echo SiteDomain="$HOSTNAME_FQDN" >> /etc/awstats/awstats.conf.local
-        fi
+     #   temp=`grep -i sitedomain /etc/awstats/awstats.conf.local | wc -l`
+      #  if [ $temp -lt 1 ]; then
+       #     echo SiteDomain="$HOSTNAME_FQDN" >> /etc/awstats/awstats.conf.local
+      #  fi
         # Disable Awstats from executing every 10 minutes. Put a hash in front of any line.
-        sed -i 's/^[^#]/#&/' /etc/cron.d/awstats
-    fi
+       # sed -i 's/^[^#]/#&/' /etc/cron.d/awstats
+  #  fi
 
-  #  service php5-fpm stop
-   # php_fpm_conf="/etc/php5/fpm/pool.d/www.conf"
+    #service php5-fpm stop
+    #php_fpm_conf="/etc/php5/fpm/pool.d/www.conf"
     # Limit FPM processes
    # sed -i 's/^pm.max_children.*/pm.max_children = '${FPM_MAX_CHILDREN}'/' $php_fpm_conf
    # sed -i 's/^pm.start_servers.*/pm.start_servers = '${FPM_START_SERVERS}'/' $php_fpm_conf
-  #  sed -i 's/^pm.min_spare_servers.*/pm.min_spare_servers = '${FPM_MIN_SPARE_SERVERS}'/' $php_fpm_conf
- #   sed -i 's/^pm.max_spare_servers.*/pm.max_spare_servers = '${FPM_MAX_SPARE_SERVERS}'/' $php_fpm_conf
-  #  sed -i 's/\;pm.max_requests.*/pm.max_requests = '${FPM_MAX_REQUESTS}'/' $php_fpm_conf
+   # sed -i 's/^pm.min_spare_servers.*/pm.min_spare_servers = '${FPM_MIN_SPARE_SERVERS}'/' $php_fpm_conf
+    #sed -i 's/^pm.max_spare_servers.*/pm.max_spare_servers = '${FPM_MAX_SPARE_SERVERS}'/' $php_fpm_conf
+   # sed -i 's/\;pm.max_requests.*/pm.max_requests = '${FPM_MAX_REQUESTS}'/' $php_fpm_conf
     # Change to socket connection for better performance
-   # sed -i 's/^listen =.*/listen = \/var\/run\/php5-fpm-www-data.sock/' $php_fpm_conf
+ #   sed -i 's/^listen =.*/listen = \/var\/run\/php5-fpm-www-data.sock/' $php_fpm_conf
 
-  #  php_ini_dir="/etc/php5/fpm/php.ini"
+   # php_ini_dir="/etc/php5/fpm/php.ini"
     # Tweak php.ini based on input in options.conf
-   # sed -i 's/^max_execution_time.*/max_execution_time = '${PHP_MAX_EXECUTION_TIME}'/' $php_ini_dir
-   # sed -i 's/^memory_limit.*/memory_limit = '${PHP_MEMORY_LIMIT}'/' $php_ini_dir
-   # sed -i 's/^max_input_time.*/max_input_time = '${PHP_MAX_INPUT_TIME}'/' $php_ini_dir
-   # sed -i 's/^post_max_size.*/post_max_size = '${PHP_POST_MAX_SIZE}'/' $php_ini_dir
-   # sed -i 's/^upload_max_filesize.*/upload_max_filesize = '${PHP_UPLOAD_MAX_FILESIZE}'/' $php_ini_dir
-   # sed -i 's/^expose_php.*/expose_php = Off/' $php_ini_dir
+  #  sed -i 's/^max_execution_time.*/max_execution_time = '${PHP_MAX_EXECUTION_TIME}'/' $php_ini_dir
+  #  sed -i 's/^memory_limit.*/memory_limit = '${PHP_MEMORY_LIMIT}'/' $php_ini_dir
+  #  sed -i 's/^max_input_time.*/max_input_time = '${PHP_MAX_INPUT_TIME}'/' $php_ini_dir
+  #  sed -i 's/^post_max_size.*/post_max_size = '${PHP_POST_MAX_SIZE}'/' $php_ini_dir
+ #   sed -i 's/^upload_max_filesize.*/upload_max_filesize = '${PHP_UPLOAD_MAX_FILESIZE}'/' $php_ini_dir
+  #  sed -i 's/^expose_php.*/expose_php = Off/' $php_ini_dir
    # sed -i 's/^disable_functions.*/disable_functions = exec,system,passthru,shell_exec,escapeshellarg,escapeshellcmd,proc_close,proc_open,dl,popen,show_source/' $php_ini_dir
 
     # Generating self signed SSL certs for securing phpMyAdmin, script logins etc
-   # echo -e " "
-   # echo -e "\033[35;1m Generating self signed SSL cert... \033[0m"
-   # mkdir /etc/ssl/localcerts
+    echo -e " "
+    echo -e "\033[35;1m Generating self signed SSL cert... \033[0m"
+    mkdir /etc/ssl/localcerts
 
     apt-get -y install expect
 
@@ -423,12 +428,12 @@ function optimize_stack {
     #sleep 1
     #service mysql restart
 
-   # restart_webserver
-   # sleep 2
+    restart_webserver
+    sleep 2
    # service php5-fpm start
-   # sleep 2
-   # service php5-fpm restart
-   # echo -e "\033[35;1m Optimize complete! \033[0m"
+    sleep 2
+    i#service php5-fpm restart
+ #   echo -e "\033[35;1m Optimize complete! \033[0m"
 
 } # End function optimize
 
@@ -655,9 +660,9 @@ install)
     install_mysql
     install_php
     install_extras
- #   install_postfix
+   # install_postfix
     restart_webserver
-  #  service php5-fpm restart
+   # service php5-fpm restart
     echo -e "\033[35;1m Webserver + PHP-FPM + MySQL install complete! \033[0m"
     ;;
 optimize)

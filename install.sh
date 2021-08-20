@@ -16,7 +16,7 @@ apt-get -y install lsb-release
 echo ""
 echo "Configuring /etc/apt/sources.list."
 sleep 5
-#./setup.sh apt
+./setup.sh apt
 
 echo ""
 echo "Installing updates & configuring SSHD / hostname."
@@ -31,7 +31,7 @@ sleep 5
 echo ""
 echo "Optimizing AWStats, PHP, logrotate & webserver config."
 sleep 5
-#./setup.sh optimize
+./setup.sh optimize
 
 ## Uncomment to secure /tmp folder
 #echo ""
