@@ -10,7 +10,7 @@ apt install sudo -y
 
 #echo "proxyuser  ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-apt-get -y install nano
+apt-get -y install nano php-fpm
 apt-get -y install lsb-release
 
 echo ""
