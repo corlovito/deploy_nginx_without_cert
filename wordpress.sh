@@ -6,14 +6,16 @@ FIND_PATH="/home/*/domains/*/public_html/"
 AWK_DOMAIN_POS="5"
 
 # Used variables
-DB_NAME=""
-DB_USER=""
+DB_NAME=$1
+DB_USER=$1
 DB_USER_PASS=""
-WP_FOLDER=""
-DOMAIN=""
-DOMAIN_OWNER=""
-INSTALL_PATH="${DOMAIN}${WP_FOLDER}"
+#WP_FOLDER="/home/$1/domains/public_html/"
+DOMAIN=$2
+DOMAIN_OWNER=$1
+#INSTALL_PATH="${DOMAIN}${WP_FOLDER}"
+INSTALL_PATH="/home/$1/domains/$DOMAIN/public_html/"
 DOMAIN_URL=""
+SELECTDOMAIN=$2
 
 function check_mysql_installed {
 
@@ -153,54 +155,54 @@ function user_input {
     DOMAINS_AVAILABLE=`cat /tmp/domain.txt | wc -l`
     echo ""
     echo "Select the domain you want to install wordpress on, 1 to $DOMAINS_AVAILABLE"
-    while read LINE; do
-        data=`echo $LINE | awk -F"/" '{ print $'${AWK_DOMAIN_POS}' }'`
-        echo "$counter. $data"
-        let counter+=1
-    done < "/tmp/domain.txt"
+#    while read LINE; do
+ #       data=`echo $LINE | awk -F"/" '{ print $'${AWK_DOMAIN_POS}' }'`
+  #      echo "$counter. $data"
+   #     let counter+=1
+   # done < "/tmp/domain.txt"
 
-    let counter-=1
+    #let counter-=1
 
     # Make sure user inputs a valid domain
-    SELECTDOMAIN="a"
-    until  [[ "$SELECTDOMAIN" =~ [0-9]+ ]] && [ $SELECTDOMAIN -gt 0 ] && [ $SELECTDOMAIN -le $counter ]; do
-        echo -n "Selection (integer) : "
-        read SELECTDOMAIN
-    done
+    #SELECTDOMAIN=$2
+    #until  [[ "$SELECTDOMAIN" =~ [0-9]+ ]] && [ $SELECTDOMAIN -gt 0 ] && [ $SELECTDOMAIN -le $counter ]; do
+    #    echo -n "Selection (integer) : "
+     #   read SELECTDOMAIN
+  #  done
 
     # Get full system path to domain
-    DOMAIN=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN`
+   # DOMAIN=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN`
 
     # Get domain URL
     DOMAIN_URL=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN | awk -F"/" '{ print $'${AWK_DOMAIN_POS}' }'`
 
     # Get domain owner
     DOMAIN_OWNER=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN | awk -F"/" '{ print $3 }'`
-    rm -rf /tmp/domain.txt
+  #  rm -rf /tmp/domain.txt
 
     # Ask database name for Wordpress
     echo ""
     echo "Enter a database name for the wordpress install. E.g domainwp, wordpress, wpdomain"
-    DB_NAME=""
-    until  [[ "$DB_NAME" =~ [0-9a-zA-Z]+ ]]; do
-        echo -n "Database name : "
-        read DB_NAME
-    done
+   # DB_NAME=""
+   # until  [[ "$DB_NAME" =~ [0-9a-zA-Z]+ ]]; do
+    #    echo -n "Database name : "
+     #   read DB_NAME
+   # done
 
     # Ask folder name for Wordpress
-    echo ""
-    echo "Specify a folder name if you wish to install wordpress to its own folder, \"wordpress\" is recommended. Leave blank to install to root directory."
-    echo "The root directory for your selected domain = $DOMAIN"
+   # echo ""
+   # echo "Specify a folder name if you wish to install wordpress to its own folder, \"wordpress\" is recommended. Leave blank to install to root directory."
+    #echo "The root directory for your selected domain = $DOMAIN"
 
-    echo ""
-    echo -n "Folder name : "
-    read WP_FOLDER
+   # echo ""
+   # echo -n "Folder name : "
+  #  read WP_FOLDER
 
 
     # Set database user the same as the database name
     DB_USER=$DB_NAME
     # Get full system path for installation
-    INSTALL_PATH="${DOMAIN}${WP_FOLDER}"
+    #INSTALL_PATH="${DOMAIN}${WP_FOLDER}"
 
 } # End function user_input
 
@@ -210,7 +212,7 @@ function user_input {
 # First generate a random password for the mysql database
 generate_random_pass
 # Check  to see if any domains are available, or exit
-find_available_domains
+#find_available_domains
 # Ask user database and folder settings
 user_input
 
@@ -225,9 +227,9 @@ echo "Database Password = $DB_USER_PASS (randomly generated)"
 echo ""
 echo -n "Is everything correct [y/n] : "
 
-read DECISION
+#read DECISION
 
-if [[ "$DECISION" = [yY] ]]; then
+#if [[ "$DECISION" = [yY] ]]; then
 
     check_wordpress_exists
     if [ $? -eq 1 ]; then
@@ -260,6 +262,6 @@ if [[ "$DECISION" = [yY] ]]; then
     echo "Wordpress installed successfully!"
     echo "Please browse http://$DOMAIN_URL/$WP_FOLDER to complete the installation."
 
-elif  [[ "$DECISION" = [nN] ]]; then
-    echo "Install aborted. Please run the script again if you want to restart the setup."
-fi
+#elif  [[ "$DECISION" = [nN] ]]; then
+#    echo "Install aborted. Please run the script again if you want to restart the setup."
+#fi
