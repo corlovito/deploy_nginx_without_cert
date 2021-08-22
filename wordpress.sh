@@ -66,7 +66,7 @@ function get_latest_wordpress {
 
     # Create wp-config.php file
     cp $INSTALL_PATH/{wp-config-sample.php,wp-config.php}
-    chown -R $DOMAIN_OWNER:$DOMAIN_OWNER $DOMAIN
+    #chown -R $DOMAIN_OWNER:$DOMAIN_OWNER $DOMAIN
 
     # Edit wp-config.php file with mysql data
     sed -i 's/database_name_here/'${DB_NAME}'/' $INSTALL_PATH/wp-config.php
@@ -151,10 +151,10 @@ function user_input {
 
     # Ask user which domain to install WP
 
-    counter=1
-    DOMAINS_AVAILABLE=`cat /tmp/domain.txt | wc -l`
-    echo ""
-    echo "Select the domain you want to install wordpress on, 1 to $DOMAINS_AVAILABLE"
+   # counter=1
+    #DOMAINS_AVAILABLE=`cat /tmp/domain.txt | wc -l`
+    #echo ""
+    #echo "Select the domain you want to install wordpress on, 1 to $DOMAINS_AVAILABLE"
 #    while read LINE; do
  #       data=`echo $LINE | awk -F"/" '{ print $'${AWK_DOMAIN_POS}' }'`
   #      echo "$counter. $data"
@@ -174,15 +174,15 @@ function user_input {
    # DOMAIN=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN`
 
     # Get domain URL
-    DOMAIN_URL=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN | awk -F"/" '{ print $'${AWK_DOMAIN_POS}' }'`
+   # DOMAIN_URL=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN | awk -F"/" '{ print $'${AWK_DOMAIN_POS}' }'`
 
     # Get domain owner
-    DOMAIN_OWNER=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN | awk -F"/" '{ print $3 }'`
+   # DOMAIN_OWNER=`cat /tmp/domain.txt | awk NR==$SELECTDOMAIN | awk -F"/" '{ print $3 }'`
   #  rm -rf /tmp/domain.txt
 
     # Ask database name for Wordpress
-    echo ""
-    echo "Enter a database name for the wordpress install. E.g domainwp, wordpress, wpdomain"
+    #echo ""
+    #echo "Enter a database name for the wordpress install. E.g domainwp, wordpress, wpdomain"
    # DB_NAME=""
    # until  [[ "$DB_NAME" =~ [0-9a-zA-Z]+ ]]; do
     #    echo -n "Database name : "
