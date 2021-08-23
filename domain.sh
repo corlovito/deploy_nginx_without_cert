@@ -3,7 +3,7 @@
 ######################################################################
 apt install sudo -y
 PASS=$(date +%s | sha256sum | base64 | head -c 12 ; echo)
-echo $2 $PASS > /tmp/pass.txt
+echo $PASS > /tmp/pass.txt
 adduser $2 --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
 echo "$2:$PASS" | sudo chpasswd
 echo "$2 ALL=(ALL:ALL) ALL" >> /etc/sudoers
