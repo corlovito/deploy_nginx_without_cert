@@ -8,7 +8,7 @@ adduser $2 --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-passwo
 echo "$2:$PASS" | sudo chpasswd
 echo "$2 ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-mysql -uroot -e "CREATE DATABASE $22"
+mysql -uroot -e "CREATE DATABASE $2"
 mysql -uroot -e "GRANT ALL PRIVILEGES ON $2.* TO $2@localhost IDENTIFIED BY '$PASS'"
 
 #Specify php-fpm socket
