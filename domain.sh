@@ -211,7 +211,7 @@ server {
 
 
 server {
-        listen 443 ssl spdy;
+        listen 443 ssl;
         server_name www.$DOMAIN $DOMAIN;
         root $DOMAIN_PATH/public_html;
         access_log $DOMAIN_PATH/logs/access.log;
